@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">AntwortN</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="lorem">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</string>
+    <string name="info_one">La plataforma que te ayudara a encontrar la respuesta a tus dudas</string>
+    <string name="info_two">Con profesionales verificados por la plataforma</string>
+    <string name="info_three">Los datos dentro de la plataforma se encuentran totalmente seguros</string>
+</resources>
