@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.MainActivity">
-    
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -23,8 +23,7 @@
         app:mbn_rippleColor="@color/primary"
         app:mbn_selectedIconColor="@color/primary"
         app:mbn_shadowColor="@color/primary"
+        app:mbn_backgroundBottomColor="@color/black"
         android:background="@color/background"/>
-
-
 
 </RelativeLayout>

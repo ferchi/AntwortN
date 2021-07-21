@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(view)
 
         addFragment(ProfileFragment.newInstance())
-        binding.bottomNavigation.show(1)
+        binding.bottomNavigation.show(0)
         binding.bottomNavigation.add(MeowBottomNavigation.Model(0,R.drawable.ic_profile_24))
         binding.bottomNavigation.add(MeowBottomNavigation.Model(1,R.drawable.ic_friends_24))
         binding.bottomNavigation.add(MeowBottomNavigation.Model(2,R.drawable.ic_search_24))
@@ -59,5 +59,9 @@ class MainActivity : AppCompatActivity() {
     private fun addFragment(fragment: Fragment){
         val fragmentTransition = supportFragmentManager.beginTransaction()
         fragmentTransition.add(R.id.fragmentContainer,fragment).addToBackStack(Fragment::class.java.simpleName).commit()
+    }
+
+    override fun onBackPressed() {
+
     }
 }
