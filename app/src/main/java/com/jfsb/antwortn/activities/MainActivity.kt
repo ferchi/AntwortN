@@ -23,8 +23,8 @@ class MainActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-        addFragment(ProfileFragment.newInstance())
-        binding.bottomNavigation.show(0)
+        addFragment(FriendsFragment.newInstance())
+        binding.bottomNavigation.show(1)
         binding.bottomNavigation.add(MeowBottomNavigation.Model(0,R.drawable.ic_profile_24))
         binding.bottomNavigation.add(MeowBottomNavigation.Model(1,R.drawable.ic_friends_24))
         binding.bottomNavigation.add(MeowBottomNavigation.Model(2,R.drawable.ic_search_24))
@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
                     replaceFragment(ExploreFragment.newInstance())
                 }
                 else -> {
-                    replaceFragment(ProfileFragment.newInstance())
+                    replaceFragment(FriendsFragment.newInstance())
                 }
             }
         }

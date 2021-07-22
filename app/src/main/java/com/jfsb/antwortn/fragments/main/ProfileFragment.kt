@@ -22,40 +22,14 @@ class ProfileFragment : Fragment() {
     var _binding : FragmentProfileBinding? = null
     val binding get() = _binding!!
 
-    lateinit var toolbar: Toolbar
-    lateinit var appbar: AppBarLayout
-
-
-    val TAKE_IMG_CODE = 1046
-    lateinit var vista: View
-    lateinit var storageChild: String
-    lateinit var databaseChild: String
-
-    lateinit var nameS: String
-    lateinit var usernameS: String
-    lateinit var imgProfileS: String
-    lateinit var imgBannerS: String
-    var miPerfil: Boolean = false
-    lateinit var uidS: String
-    lateinit var userType: String
-
-    var clickFollow : Boolean = false
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         _binding = FragmentProfileBinding.inflate(inflater,container,false)
         return binding.root
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -68,13 +42,18 @@ class ProfileFragment : Fragment() {
         params.behavior = CircleImageViewBehavior()
 
         setUpTabs()
-
     }
+
     private fun setUpTabs() {
-        val adapter = ViewPagerAdapter((activity as AppCompatActivity?)!!.supportFragmentManager)
+        //val adapter = ViewPagerAdapter((activity as AppCompatActivity?)!!.supportFragmentManager)
+
+        //Utilizar el childFragmentManager para evitar errores dentro del tab layout
+        val adapter = ViewPagerAdapter(childFragmentManager)
+
         adapter.addFragment(NewsFragment(), "Recientes")
         adapter.addFragment(ConsultFragment(), "Consultas")
         adapter.addFragment(AnswersFragment(), "Respuestas")
+
         binding.viewPager.adapter = adapter
         binding.tabs.setupWithViewPager(binding.viewPager)
 
