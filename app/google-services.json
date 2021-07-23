@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "641919723333",
+    "project_id": "antwortn-d872d",
+    "storage_bucket": "antwortn-d872d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:641919723333:android:8e0b27ce1c0889c646002c",
+        "android_client_info": {
+          "package_name": "com.jfsb.antwortn"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "641919723333-9c48d5esdi852cih55ske0uim48mijff.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.jfsb.antwortn",
+            "certificate_hash": "7c3dccafc02729445100e3878760bafc147a8c5b"
+          }
+        },
+        {
+          "client_id": "641919723333-865tk9b7i279criv6mej32g50l2rks8h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQdDleziERGGURvTdSLCLlNvTH9F0sts4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "641919723333-865tk9b7i279criv6mej32g50l2rks8h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

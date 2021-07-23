@@ -75,6 +75,7 @@ class MainFragment : Fragment() {
             communicator.changeFragment(RegisterFragment(),R.anim.slide_right)
         }
 
+
     }
 
     private fun selectedDots(position: Int) {
