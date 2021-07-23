@@ -26,7 +26,7 @@ class RegisterFragment : Fragment() {
     var txtusername:String = ""
     var txtemail:String = ""
     var txtname:String = ""
-    var txtusertype:String = "estudiante"
+    var txtusertype:String = ""
     var txtpassword:String = ""
     var txtRepassword:String = ""
 
@@ -44,14 +44,7 @@ class RegisterFragment : Fragment() {
         userDB = FirebaseDatabase.getInstance()
         userDB_ref = userDB.getReference("Users")
 
-        binding.swRegistro.setOnCheckedChangeListener{_,isChecked ->
-            if (isChecked){
-                txtusertype = "maestro"
-            }
-            else{
-                txtusertype = "estudiante"
-            }
-        }
+
     }
 
     override fun onCreateView(
@@ -64,6 +57,14 @@ class RegisterFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.swRegistro.setOnCheckedChangeListener{_,isChecked ->
+            txtusertype = if (isChecked){
+                "maestro"
+            } else{
+                "estudiante"
+            }
+        }
 
         binding.btnRegistroRegistro.setOnClickListener {
 
@@ -127,9 +128,6 @@ class RegisterFragment : Fragment() {
                 Toast.makeText(context,"Favor de llenar todos los datos", Toast.LENGTH_SHORT).show()
             }
         }
-
-
-
 
     }
 }

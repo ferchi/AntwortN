@@ -1,8 +1,10 @@
 package com.jfsb.antwortn.activities
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import com.google.firebase.auth.FirebaseAuth
 import com.jfsb.antwortn.R
 import com.jfsb.antwortn.databinding.ActivityStartBinding
 import com.jfsb.antwortn.fragments.start.Communicator
@@ -11,7 +13,7 @@ import com.jfsb.antwortn.fragments.start.MainFragment
 class StartActivity : AppCompatActivity(), Communicator {
 
     lateinit var binding:ActivityStartBinding
-
+    private lateinit var mAuth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,7 +22,11 @@ class StartActivity : AppCompatActivity(), Communicator {
         val view = binding.root
         setContentView(view)
         changeFragment(MainFragment())
+        mAuth = FirebaseAuth.getInstance()
 
+        if(mAuth.currentUser!=null){
+            startApp()
+        }
 /*
         Picasso.get()
             .load(R.drawable.antwort_logo)
@@ -50,5 +56,10 @@ class StartActivity : AppCompatActivity(), Communicator {
     override fun onBackPressed() {
 
         changeFragment(MainFragment(),R.anim.slide_right)
+    }
+
+    private fun startApp(){
+        val intentProfile = Intent(this, MainActivity::class.java).apply {}
+        startActivity(intentProfile)
     }
 }
