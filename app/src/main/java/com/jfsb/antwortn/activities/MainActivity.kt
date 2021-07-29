@@ -1,9 +1,12 @@
 package com.jfsb.antwortn.activities
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.etebarian.meowbottomnavigation.MeowBottomNavigation
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 
 import com.jfsb.antwortn.R
 import com.jfsb.antwortn.databinding.ActivityMainBinding
@@ -11,10 +14,13 @@ import com.jfsb.antwortn.fragments.main.ExploreFragment
 import com.jfsb.antwortn.fragments.main.FriendsFragment
 import com.jfsb.antwortn.fragments.main.ProfileFragment
 import com.jfsb.antwortn.fragments.main.SearchFragment
+import com.jfsb.antwortn.activities.Utils.openProfile
+
 
 class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
+    private val mAuth: FirebaseAuth = FirebaseAuth.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,6 +68,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-
+        val intentExit = Intent(this, StartActivity::class.java).apply {}
+        mAuth.signOut()
+        startActivity(intentExit)
+        finish()
     }
 }

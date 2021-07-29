@@ -8,6 +8,8 @@
         android:label="@string/app_name"
         android:roundIcon="@drawable/antwort_iso"
         android:supportsRtl="true"
+        android:usesCleartextTraffic="true"
+
         android:theme="@style/Theme.AntwortN">
         <activity android:name=".activities.MainActivity"></activity>
         <activity android:name=".activities.StartActivity">
@@ -17,6 +19,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>
