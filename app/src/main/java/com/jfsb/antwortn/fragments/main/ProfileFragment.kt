@@ -72,10 +72,7 @@ class ProfileFragment : Fragment() {
         (activity as AppCompatActivity?)!!.setSupportActionBar(binding.toolBarLayout)
         (activity as AppCompatActivity?)!!.supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        getDataPofile(FirebaseDatabase.getInstance().reference, "Users", mAuth.currentUser!!.uid,miPerfil)
-
-
-
+        getDataPofile(FirebaseDatabase.getInstance().reference, "Users", mAuth.currentUser!!.uid)
     }
 
     private fun setUpTabs() {
@@ -96,7 +93,7 @@ class ProfileFragment : Fragment() {
         binding.tabs.getTabAt(2)!!.setIcon(R.drawable.ic_question_24)
     }
 
-    fun getDataPofile(mDatabase: DatabaseReference, child:String, user:String, miperfil:Boolean) {
+    fun getDataPofile(mDatabase: DatabaseReference, child:String, user:String) {
 
         mDatabase.child(child).child(user).addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -264,6 +261,7 @@ class ProfileFragment : Fragment() {
     private fun addFriend() {
         userDB_ref.child("Users").child(mAuth.currentUser!!.uid).child("friends").child(uidS).setValue(uidS)
     }
+
     private fun removeFriend() {
         userDB_ref.child("Users").child(mAuth.currentUser!!.uid).child("friends").child(uidS).removeValue()
     }
