@@ -1,26 +1,25 @@
 package com.jfsb.antwortn.social
 
+import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewbinding.ViewBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
-import com.jfsb.antwortn.activities.MainActivity
 import com.jfsb.antwortn.R
-import com.jfsb.antwortn.activities.Utils.openProfile
-import com.jfsb.antwortn.databinding.ActivityMainBinding.inflate
 import com.jfsb.antwortn.databinding.CardFriendBinding
-import com.jfsb.antwortn.databinding.CardFriendBinding.inflate
-import com.jfsb.antwortn.databinding.FragmentConsultBinding.inflate
 import com.squareup.picasso.Picasso
+import com.jfsb.antwortn.activities.UserActivity
+import com.jfsb.antwortn.activities.Utils.openProfile
 
-class FriendAdapter (private val dataset: List<FriendCard>):RecyclerView.Adapter<FriendAdapter.ViewHolder>()/*,
+class FriendAdapter (val context:Context, private val dataset: List<FriendCard>):RecyclerView.Adapter<FriendAdapter.ViewHolder>()/*,
     PopupMenu.OnMenuItemClickListener*/ {
     class ViewHolder (val binding: CardFriendBinding) : RecyclerView.ViewHolder(binding.root)
-    val mAuth: FirebaseAuth = FirebaseAuth.getInstance()
+
+    private var mAuth: FirebaseAuth = FirebaseAuth.getInstance()
+
     var friendCurrent:Int = 0
     lateinit var arrowItem:ImageView
 
@@ -52,11 +51,17 @@ class FriendAdapter (private val dataset: List<FriendCard>):RecyclerView.Adapter
         }catch (e:Exception){
             Picasso.get().load(R.drawable.woman).into(holder.binding.imageCard)
         }
-/*
-        holder.binding.imageCard.setOnClickListener{
-            openProfile(FirebaseDatabase.getInstance().reference,"Users",friend.userId.toString(),it.context, PerfilMainActivity(),false)
-        }
 
+        val animationFadeOut = AnimationUtils.loadAnimation(context, R.anim.fade_transition)
+        holder.binding.friendcard.startAnimation(animationFadeOut)
+
+        holder.binding.imageCard.setOnClickListener{
+            var miPerfil  = friend.userId.toString() == mAuth.currentUser!!.uid
+
+            openProfile(FirebaseDatabase.getInstance().reference,"Users",friend.userId.toString(),it.context, UserActivity(),miPerfil)
+        }
+    }
+/*
         holder.layout.menu_card_icon.setOnClickListener{
             val popupMenu = PopupMenu(it.context,it)
             popupMenu.inflate(R.menu.menu_card_friend)
@@ -80,4 +85,3 @@ class FriendAdapter (private val dataset: List<FriendCard>):RecyclerView.Adapter
         return false
     }*/
 
-}

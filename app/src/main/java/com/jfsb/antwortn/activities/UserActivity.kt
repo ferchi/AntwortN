@@ -1,19 +1,18 @@
-package com.jfsb.antwortn.fragments.main
+package com.jfsb.antwortn.activities
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
-import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.fragment.app.Fragment
 import com.google.android.material.appbar.AppBarLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -22,10 +21,8 @@ import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.jfsb.antwortn.R
-import com.jfsb.antwortn.activities.MainActivity
-import com.jfsb.antwortn.activities.StartActivity
-import com.jfsb.antwortn.activities.Utils
-import com.jfsb.antwortn.databinding.FragmentProfileBinding
+import com.jfsb.antwortn.databinding.ActivityStartBinding
+import com.jfsb.antwortn.databinding.ActivityUserBinding
 import com.jfsb.antwortn.fragments.adapters.ViewPagerAdapter
 import com.jfsb.antwortn.fragments.profile.AnswersFragment
 import com.jfsb.antwortn.fragments.profile.ConsultFragment
@@ -33,134 +30,121 @@ import com.jfsb.antwortn.fragments.profile.NewsFragment
 import com.jfsb.antwortn.profileview.CircleImageViewBehavior
 import com.squareup.picasso.Picasso
 import java.io.ByteArrayOutputStream
-import java.util.ArrayList
 
+class UserActivity : AppCompatActivity() {
 
-class ProfileFragment : Fragment() {
-    var _binding : FragmentProfileBinding? = null
-    val binding get() = _binding!!
-
-    private val mAuth: FirebaseAuth = FirebaseAuth.getInstance()
-    private var userDB_ref: DatabaseReference = FirebaseDatabase.getInstance().reference
+    lateinit var binding: ActivityUserBinding
 
     lateinit var toolbar: Toolbar
     lateinit var appbar: AppBarLayout
 
+    private lateinit var mAuth: FirebaseAuth
+    private lateinit var userDB_ref: DatabaseReference
 
-    // Variables que contienen la informacion del usuario en la vista actual
-    lateinit var nameS: String
-    lateinit var usernameS: String
-    lateinit var imgProfileS: String
-    lateinit var imgBannerS: String
-    var miPerfil: Boolean = true
-    lateinit var uidS: String
-    lateinit var userType: String
-
-    var clickFollow : Boolean = false
-
-    // Variables para la obtencion y cambio de las imagenes de perfil
     val TAKE_IMG_CODE = 1046
     lateinit var vista: View
     lateinit var storageChild: String
     lateinit var databaseChild: String
 
+    lateinit var nameS: String
+    lateinit var usernameS: String
+    lateinit var imgProfileS: String
+    lateinit var imgBannerS: String
+    var miPerfil: Boolean = false
+    lateinit var uidS: String
+    lateinit var userType: String
+
+    var clickFollow : Boolean = false
+
+    @SuppressLint("UseCompatLoadingForDrawables")
 
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        _binding = FragmentProfileBinding.inflate(inflater,container,false)
-        return binding.root
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        binding = ActivityUserBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
+
+        nameS = intent.getStringExtra("name").toString()
+        usernameS = intent.getStringExtra("username").toString()
+        uidS = intent.getStringExtra("uid").toString()
+        imgProfileS = intent.getStringExtra("imgProfile").toString()
+        imgBannerS = intent.getStringExtra("imgBanner").toString()
+        miPerfil = intent.getBooleanExtra("miperfil", false)
+        userType = intent.getStringExtra("usertype").toString()
+
+
+        //Instancia de los elementos dentro del layout
+        toolbar = findViewById(R.id.toolBarLayout)
+        appbar = findViewById(R.id.appbarLayout)
+
+        setSupportActionBar(toolbar)
+
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        mAuth = FirebaseAuth.getInstance()
+        userDB_ref = FirebaseDatabase.getInstance().reference
+
+        binding.tvFullname.text = nameS
+        binding.tvUsername.text = usernameS
+
+        //Implementacion de las propiedades del FAB a un CircleImage
+        val params = binding.imageUser.layoutParams as CoordinatorLayout.LayoutParams
+        params.behavior = CircleImageViewBehavior()
+
+        //Metodo para habilitar el uso de Tabs dentro del Layout
+        setUpTabs()
+
+        loadImg()
+        isFriend()
+
+        if (!miPerfil) {
+            binding.tvUsername.setOnClickListener {
+                if(!clickFollow){
+                    Log.d("seguir", "añadir")
+                    addFriend()
+                    clickFollow = !clickFollow
+                } else {
+                    Log.d("seguir", "eliminar")
+                    removeFriend()
+                    clickFollow = !clickFollow
+                }
+            }
+        }
+        else{
+            binding.imageUser.setOnLongClickListener {
+                changeImg(it)
+            }
+            binding.imageBanner.setOnLongClickListener {
+                changeImg(it)
+            }
+        }
+
+        if(userType == "maestro"){
+            Picasso.get().load(R.drawable.ic_teacher_24).into(binding.usertypeImg)
+        }
+        else{
+            Picasso.get().load(R.drawable.ic_student_24).into(binding.usertypeImg)
+        }
     }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        (activity as AppCompatActivity?)!!.setSupportActionBar(binding.toolBarLayout)
-        //(activity as AppCompatActivity?)!!.supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-        getDataPofile(FirebaseDatabase.getInstance().reference, "Users", mAuth.currentUser!!.uid)
-
+    
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
     }
-
 
     private fun setUpTabs() {
-        //val adapter = ViewPagerAdapter((activity as AppCompatActivity?)!!.supportFragmentManager)
-
-        //Utilizar el childFragmentManager para evitar errores dentro del tab layout
-        val adapter = ViewPagerAdapter(childFragmentManager)
-
+        val adapter = ViewPagerAdapter(supportFragmentManager)
         adapter.addFragment(NewsFragment(), "Recientes")
         adapter.addFragment(ConsultFragment(), "Consultas")
         adapter.addFragment(AnswersFragment(), "Respuestas")
-
         binding.viewPager.adapter = adapter
         binding.tabs.setupWithViewPager(binding.viewPager)
 
         binding.tabs.getTabAt(0)!!.setIcon(R.drawable.ic_new_24)
         binding.tabs.getTabAt(1)!!.setIcon(R.drawable.ic_hearing_24)
         binding.tabs.getTabAt(2)!!.setIcon(R.drawable.ic_question_24)
-    }
-
-    fun getDataPofile(mDatabase: DatabaseReference, child:String, user:String) {
-
-        mDatabase.child(child).child(user).addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-
-                usernameS = dataSnapshot.child("username").value.toString()
-                nameS = dataSnapshot.child("name").value.toString()
-                imgProfileS = dataSnapshot.child("imgProfile").value.toString()
-                imgBannerS = dataSnapshot.child("imgBanner").value.toString()
-                uidS = dataSnapshot.child("uid").value.toString()
-                userType = dataSnapshot.child("usertype").value.toString()
-
-                binding.tvFullname.text = nameS
-                binding.tvUsername.text = usernameS
-
-                //Implementacion de las propiedades del FAB a un CircleImage
-                val params = binding.imageUser.layoutParams as CoordinatorLayout.LayoutParams
-                params.behavior = CircleImageViewBehavior()
-
-                setUpTabs()
-
-                loadImg()
-                isFriend()
-
-                if (!miPerfil) {
-                    binding.tvUsername.setOnClickListener {
-                        if(!clickFollow){
-                            Log.d("seguir", "añadir")
-                            addFriend()
-                            clickFollow = !clickFollow
-                        } else {
-                            Log.d("seguir", "eliminar")
-                            removeFriend()
-                            clickFollow = !clickFollow
-                        }
-                    }
-                }
-                else{
-                    binding.imageUser.setOnLongClickListener {
-                        changeImg(it)
-                    }
-                    binding.imageBanner.setOnLongClickListener {
-                        changeImg(it)
-                    }
-                }
-
-                if(userType == "maestro"){
-                    Picasso.get().load(R.drawable.ic_teacher_24).into(binding.usertypeImg)
-                }
-                else{
-                    Picasso.get().load(R.drawable.ic_student_24).into(binding.usertypeImg)
-                }
-
-            }
-            override fun onCancelled(databaseError: DatabaseError) {
-
-            }
-        })
     }
 
     fun loadImg() {
@@ -200,7 +184,7 @@ class ProfileFragment : Fragment() {
         intent.action = Intent.ACTION_GET_CONTENT
         intent.type = "image/*"
 
-        if (intent.resolveActivity(requireActivity().packageManager) != null) {
+        if (intent.resolveActivity(packageManager) != null) {
             startActivityForResult(intent, TAKE_IMG_CODE)
         }
 
@@ -211,9 +195,9 @@ class ProfileFragment : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == TAKE_IMG_CODE) {
             when (resultCode) {
-                AppCompatActivity.RESULT_OK -> {
+                RESULT_OK -> {
                     val bitmap: Bitmap =
-                        MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, data?.data)
+                        MediaStore.Images.Media.getBitmap(this.contentResolver, data?.data)
                     if (vista.id == binding.imageUser.id) {
                         binding.imageUser.setImageBitmap(bitmap)
                     } else {
@@ -261,23 +245,23 @@ class ProfileFragment : Fragment() {
             .addOnSuccessListener {
                 userDB_ref.child("Users").child(uidS).child(databaseChild).setValue(uri.toString())
                 loadImg()
-                Toast.makeText(context, "Actualización exitosa", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Actualización exitosa", Toast.LENGTH_SHORT).show()
             }
             .addOnFailureListener {
-                Toast.makeText(context, "Actualización fallida", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Actualización fallida", Toast.LENGTH_SHORT).show()
             }
     }
 
     private fun addFriend() {
         userDB_ref.child("Users").child(mAuth.currentUser!!.uid).child("friends").child(uidS).setValue(uidS)
     }
-
     private fun removeFriend() {
         userDB_ref.child("Users").child(mAuth.currentUser!!.uid).child("friends").child(uidS).removeValue()
     }
 
     private fun isFriend(){
-        userDB_ref.child("Users").child(mAuth.currentUser!!.uid).child("friends").addValueEventListener(object : ValueEventListener {
+        userDB_ref.child("Users").child(mAuth.currentUser!!.uid).child("friends").addValueEventListener(object :
+            ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if(dataSnapshot.hasChild(uidS)){
                     binding.tvUsername.background = resources.getDrawable(R.drawable.rounded_corners_or)
@@ -291,16 +275,5 @@ class ProfileFragment : Fragment() {
             }
         })
     }
-
-    companion object {
-        @JvmStatic
-        fun newInstance(perfil:Boolean = true) =
-            ProfileFragment().apply {
-                arguments = Bundle().apply {
-                    miPerfil = perfil
-                }
-            }
-    }
-
 
 }

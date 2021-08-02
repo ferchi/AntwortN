@@ -43,6 +43,7 @@ class SearchFragment : Fragment() {
         layoutManager.reverseLayout = true
         binding.rvSearch.layoutManager = layoutManager
 
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -65,7 +66,7 @@ class SearchFragment : Fragment() {
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 if (!TextUtils.isEmpty(newText)){
-                    searchFriends(newText)
+                    //searchFriends(newText)
                 }else{
 
                 }
@@ -136,7 +137,7 @@ class SearchFragment : Fragment() {
                         friends.add(modelFriendCard)
                     }
 
-                    val friendAdapter = FriendAdapter(friends)
+                    val friendAdapter = FriendAdapter(requireContext(),friends)
                     binding.rvSearch.adapter = friendAdapter
                 }
 
@@ -146,7 +147,6 @@ class SearchFragment : Fragment() {
 
         })
     }
-
 
     companion object {
         @JvmStatic

@@ -7,6 +7,6 @@ class ToolbarSearchAdapter {
     fun show(activities:AppCompatActivity, title:String, upButton:Boolean){
         activities.setSupportActionBar(activities.findViewById(R.id.toolbarSearch))
         activities.supportActionBar?.title = title
-        activities.supportActionBar?.setDisplayHomeAsUpEnabled(upButton)
+        //activities.supportActionBar?.setDisplayHomeAsUpEnabled(upButton)
     }
 }
