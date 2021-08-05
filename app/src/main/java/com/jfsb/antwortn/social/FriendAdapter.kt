@@ -26,7 +26,6 @@ class FriendAdapter (val context:Context, private val dataset: List<FriendCard>)
     override fun getItemCount() = dataset.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val layout = LayoutInflater.from(parent.context).inflate(R.layout.card_friend,parent,false)
         return ViewHolder(CardFriendBinding.inflate(LayoutInflater.from(parent.context),parent,false))
     }
 
