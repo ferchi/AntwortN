@@ -13,8 +13,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.jfsb.antwortn.R
 import com.jfsb.antwortn.databinding.FragmentConsultBinding
-import com.jfsb.antwortn.databinding.FragmentFriendsBinding
-import com.jfsb.antwortn.post.CreateActivity
+
+import com.jfsb.antwortn.post.CreatePostDialog
 import com.jfsb.antwortn.post.Post
 import com.jfsb.antwortn.post.PostAdapter
 
@@ -64,8 +64,11 @@ class ConsultFragment : Fragment() {
         }
 
         fab.setOnClickListener{
+
+            CreatePostDialog().show(requireActivity().supportFragmentManager, "Crear")
+            /*
             val intent = Intent (requireContext(), CreateActivity::class.java)
-            startActivity(intent)
+            startActivity(intent)*/
         }
 
     }

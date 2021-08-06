@@ -2,6 +2,7 @@ package com.jfsb.antwortn.post
 
 import android.content.Intent
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
@@ -31,6 +32,7 @@ class PostAdapter (private val fragment: Fragment, private val dataset: List<Pos
         val likes = post.likes!!.toMutableList()
         var liked = likes.contains(auth.uid)
 
+        holder.binding.titleTextView.text = post.title
         holder.binding.tvPostLikes.text = "${(likes.size)}" // "${(likes.size)} likes"
         holder.binding.tvPostAuthor.text = post.userName
         holder.binding.tvPostContent.text = post.post
@@ -64,10 +66,20 @@ class PostAdapter (private val fragment: Fragment, private val dataset: List<Pos
             val shareIntent = Intent.createChooser(sendIntent, null)
             fragment.startActivity(shareIntent)
         }
+
+        val isExpanded: Boolean = post.isExpanded()
+        holder.binding.expandableLayout.visibility = if (isExpanded) View.VISIBLE else View.GONE
+
+        holder.binding.titleTextView.setOnClickListener {
+            post.setExpanded(!post.isExpanded())
+            notifyItemChanged(position)
+        }
     }
 
     private fun setColor(liked: Boolean, likeButton: CircleImageView){
         if(liked) likeButton.setBackgroundResource(R.drawable.ic_ok_orange_24)
-        else likeButton.setBackgroundResource(R.drawable.ic_ok_grey_24)
+        else likeButton.setBackgroundResource(R.drawable.ic_ok_white_24)
     }
+
+
 }

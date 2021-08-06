@@ -12,7 +12,6 @@
         android:usesCleartextTraffic="true">
         <activity android:name=".activities.UserActivity"></activity>
         <activity android:name=".activities.MainActivity" />
-        <activity android:name=".post.CreateActivity"/>
         <activity android:name=".activities.StartActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
