@@ -85,14 +85,14 @@ class ProfileFragment : Fragment() {
     }
 
 
-    private fun setUpTabs() {
+    private fun setUpTabs(profileId:String) {
         //val adapter = ViewPagerAdapter((activity as AppCompatActivity?)!!.supportFragmentManager)
 
         //Utilizar el childFragmentManager para evitar errores dentro del tab layout
         val adapter = ViewPagerAdapter(childFragmentManager)
 
         adapter.addFragment(NewsFragment(), "Recientes")
-        adapter.addFragment(ConsultFragment(), "Consultas")
+        adapter.addFragment(ConsultFragment(profileId), "Consultas")
         adapter.addFragment(AnswersFragment(), "Respuestas")
 
         binding.viewPager.adapter = adapter
@@ -122,7 +122,7 @@ class ProfileFragment : Fragment() {
                 val params = binding.imageUser.layoutParams as CoordinatorLayout.LayoutParams
                 params.behavior = CircleImageViewBehavior()
 
-                setUpTabs()
+                setUpTabs(uidS)
 
                 loadImg()
                 isFriend()

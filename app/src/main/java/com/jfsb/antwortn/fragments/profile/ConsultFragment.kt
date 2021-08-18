@@ -2,6 +2,7 @@ package com.jfsb.antwortn.fragments.profile
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -19,7 +20,7 @@ import com.jfsb.antwortn.post.Post
 import com.jfsb.antwortn.post.PostAdapter
 
 
-class ConsultFragment : Fragment() {
+class ConsultFragment(private val profileId:String) : Fragment() {
 
     var _binding : FragmentConsultBinding? = null
     val binding get() = _binding!!
@@ -47,18 +48,21 @@ class ConsultFragment : Fragment() {
         rev = binding.rvConsultasFragment
         fab = binding.fabNewConsult
 
-        db.collection("post").addSnapshotListener{value, error ->
+        db.collection("post").whereEqualTo("userId",profileId).addSnapshotListener{value, error ->
             val posts = value!!.toObjects(Post::class.java)
 
+/*
             posts.forEachIndexed{ index, post ->
-                post.uid = value.documents[index].id
-            }
+                post.postId = value.documents[index].id
+            }*/
 
             //posts.add(2,Post("Texto donde se explica la duda que se tiene", Date(),"Username"))
 
             rev.apply {
                 setHasFixedSize(true)
                 layoutManager = LinearLayoutManager(context)
+
+
                 adapter = PostAdapter(this@ConsultFragment,posts)
             }
         }
@@ -71,15 +75,5 @@ class ConsultFragment : Fragment() {
             startActivity(intent)*/
         }
 
-    }
-    companion object {
-
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ConsultFragment().apply {
-                arguments = Bundle().apply {
-
-                }
-            }
     }
 }

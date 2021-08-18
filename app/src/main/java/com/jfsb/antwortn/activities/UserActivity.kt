@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
-import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
@@ -21,7 +20,6 @@ import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.jfsb.antwortn.R
-import com.jfsb.antwortn.databinding.ActivityStartBinding
 import com.jfsb.antwortn.databinding.ActivityUserBinding
 import com.jfsb.antwortn.fragments.adapters.ViewPagerAdapter
 import com.jfsb.antwortn.fragments.profile.AnswersFragment
@@ -94,7 +92,7 @@ class UserActivity : AppCompatActivity() {
         params.behavior = CircleImageViewBehavior()
 
         //Metodo para habilitar el uso de Tabs dentro del Layout
-        setUpTabs()
+        setUpTabs(uidS)
 
         loadImg()
         isFriend()
@@ -134,10 +132,10 @@ class UserActivity : AppCompatActivity() {
         return true
     }
 
-    private fun setUpTabs() {
+    private fun setUpTabs(profileId:String) {
         val adapter = ViewPagerAdapter(supportFragmentManager)
         adapter.addFragment(NewsFragment(), "Recientes")
-        adapter.addFragment(ConsultFragment(), "Consultas")
+        adapter.addFragment(ConsultFragment(profileId), "Consultas")
         adapter.addFragment(AnswersFragment(), "Respuestas")
         binding.viewPager.adapter = adapter
         binding.tabs.setupWithViewPager(binding.viewPager)
@@ -255,6 +253,7 @@ class UserActivity : AppCompatActivity() {
     private fun addFriend() {
         userDB_ref.child("Users").child(mAuth.currentUser!!.uid).child("friends").child(uidS).setValue(uidS)
     }
+
     private fun removeFriend() {
         userDB_ref.child("Users").child(mAuth.currentUser!!.uid).child("friends").child(uidS).removeValue()
     }

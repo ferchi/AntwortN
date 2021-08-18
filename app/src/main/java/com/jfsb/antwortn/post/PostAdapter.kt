@@ -4,6 +4,7 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
@@ -28,7 +29,8 @@ class PostAdapter (private val fragment: Fragment, private val dataset: List<Pos
     override fun getItemCount() = dataset.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val post =  dataset[position]
+
+        val post = dataset[position]
         val likes = post.likes!!.toMutableList()
         var liked = likes.contains(auth.uid)
 
@@ -42,25 +44,32 @@ class PostAdapter (private val fragment: Fragment, private val dataset: List<Pos
         holder.binding.tvPostDate.text = sdf.format(post.date)
         setColor(liked, holder.binding.civPostLikes)
 
-        holder.binding.civPostLikes.setOnClickListener{
+        holder.binding.tvPostLikes.setOnClickListener{
+            LikersDialog(post.postId.toString()).show(fragment.requireActivity().supportFragmentManager, "Crear")
+        }
+        holder.binding.textView3.setOnClickListener{
+            LikersDialog(post.postId.toString()).show(fragment.requireActivity().supportFragmentManager, "Crear")
+        }
+
+        holder.binding.civPostLikes.setOnClickListener {
             liked = !liked
             setColor(liked, holder.binding.civPostLikes)
 
-            if(liked) likes.add(auth.uid!!)
+            if (liked) likes.add(auth.uid!!)
             else likes.remove(auth.uid)
 
-            val doc = db.collection("post").document(post.uid!!)
+            val doc = db.collection("post").document(post.postId!!)
 
-            db.runTransaction{
-                 it.update(doc,"likes",likes)
+            db.runTransaction {
+                it.update(doc, "likes", likes)
                 null
             }
         }
 
-        holder.binding.civPostComments.setOnClickListener{
+        holder.binding.civPostComments.setOnClickListener {
             val sendIntent = Intent().apply {
                 action = Intent.ACTION_SEND
-                putExtra(Intent.EXTRA_TEXT,post.post)
+                putExtra(Intent.EXTRA_TEXT, post.post)
                 type = "text/plain"
             }
             val shareIntent = Intent.createChooser(sendIntent, null)
@@ -74,6 +83,7 @@ class PostAdapter (private val fragment: Fragment, private val dataset: List<Pos
             post.setExpanded(!post.isExpanded())
             notifyItemChanged(position)
         }
+
     }
 
     private fun setColor(liked: Boolean, likeButton: CircleImageView){

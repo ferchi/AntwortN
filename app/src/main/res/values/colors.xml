@@ -15,4 +15,5 @@
     <color name="black">#000000</color>
     <color name="dark_semitransparent">#C6000000</color>
     <color name="gray_text">#CBC6C2C2</color>
+    <color name="transparent">#00000000</color>
 </resources>
