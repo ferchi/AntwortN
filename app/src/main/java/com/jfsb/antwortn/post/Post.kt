@@ -2,7 +2,15 @@ package com.jfsb.antwortn.post;
 import com.google.firebase.database.Exclude
 import java.util.*;
 
-class Post(var postId: String? = null, val title: String? = null, val post:String? = null, val date: Date? = null, val userName: String? = null, val userId: String? = null, val likes: ArrayList<String>? = arrayListOf()){
+class Post(var postId: String? = null,
+           val title: String? = null,
+           val post:String? = null,
+           val date: Date? = null,
+           val userName: String? = null,
+           val userId: String? = null,
+           val commentsCount: Int = 0,
+           val likes: ArrayList<String>? = arrayListOf()){
+
     @Exclude
     @set:Exclude
     @get:Exclude
@@ -17,5 +25,5 @@ class Post(var postId: String? = null, val title: String? = null, val post:Strin
     fun setExpanded(expand: Boolean) {
         expanded = expand
     }
-    constructor(): this(null,null,null,null,null,null, null)
+    constructor(): this(null,null,null,null,null,null, 0)
 }

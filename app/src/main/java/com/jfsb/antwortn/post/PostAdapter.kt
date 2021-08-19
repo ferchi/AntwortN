@@ -1,15 +1,15 @@
 package com.jfsb.antwortn.post
 
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.jfsb.antwortn.R
+import com.jfsb.antwortn.comments.CommentsDialog
+import com.jfsb.antwortn.comments.CreateCommentDialog
 import com.jfsb.antwortn.databinding.CardPostBinding
 import de.hdodenhof.circleimageview.CircleImageView
 import java.text.SimpleDateFormat
@@ -38,11 +38,12 @@ class PostAdapter (private val fragment: Fragment, private val dataset: List<Pos
         holder.binding.tvPostLikes.text = "${(likes.size)}" // "${(likes.size)} likes"
         holder.binding.tvPostAuthor.text = post.userName
         holder.binding.tvPostContent.text = post.post
+        holder.binding.tvPostComments.text = post.commentsCount.toString()
 
         val sdf = SimpleDateFormat("dd/M/yyyy hh:mm a")
 
         holder.binding.tvPostDate.text = sdf.format(post.date)
-        setColor(liked, holder.binding.civPostLikes)
+        setLike(liked, holder.binding.civPostLikes)
 
         holder.binding.tvPostLikes.setOnClickListener{
             LikersDialog(post.postId.toString()).show(fragment.requireActivity().supportFragmentManager, "Crear")
@@ -51,9 +52,17 @@ class PostAdapter (private val fragment: Fragment, private val dataset: List<Pos
             LikersDialog(post.postId.toString()).show(fragment.requireActivity().supportFragmentManager, "Crear")
         }
 
+        holder.binding.tvPostComments.setOnClickListener {
+            CommentsDialog(post.postId.toString()).show(fragment.requireActivity().supportFragmentManager, "Comentarios")
+        }
+
+        holder.binding.textView4.setOnClickListener {
+            CommentsDialog(post.postId.toString()).show(fragment.requireActivity().supportFragmentManager, "Comentarios")
+        }
+
         holder.binding.civPostLikes.setOnClickListener {
             liked = !liked
-            setColor(liked, holder.binding.civPostLikes)
+            setLike(liked, holder.binding.civPostLikes)
 
             if (liked) likes.add(auth.uid!!)
             else likes.remove(auth.uid)
@@ -67,13 +76,7 @@ class PostAdapter (private val fragment: Fragment, private val dataset: List<Pos
         }
 
         holder.binding.civPostComments.setOnClickListener {
-            val sendIntent = Intent().apply {
-                action = Intent.ACTION_SEND
-                putExtra(Intent.EXTRA_TEXT, post.post)
-                type = "text/plain"
-            }
-            val shareIntent = Intent.createChooser(sendIntent, null)
-            fragment.startActivity(shareIntent)
+            CreateCommentDialog(post.postId!!).show(fragment.requireActivity().supportFragmentManager, "Comentar")
         }
 
         val isExpanded: Boolean = post.isExpanded()
@@ -86,10 +89,9 @@ class PostAdapter (private val fragment: Fragment, private val dataset: List<Pos
 
     }
 
-    private fun setColor(liked: Boolean, likeButton: CircleImageView){
+    private fun setLike(liked: Boolean, likeButton: CircleImageView){
         if(liked) likeButton.setBackgroundResource(R.drawable.ic_ok_orange_24)
         else likeButton.setBackgroundResource(R.drawable.ic_ok_white_24)
     }
-
 
 }

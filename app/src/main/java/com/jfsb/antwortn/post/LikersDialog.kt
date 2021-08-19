@@ -47,7 +47,7 @@ class LikersDialog (val postId:String) : DialogFragment() {
 
             rev = binding.rvLikers
 
-            db_store.collection("post").whereEqualTo("postId",postId).addSnapshotListener{value, error ->
+            db_store.collection("post").whereEqualTo("postId",postId).orderBy("date").addSnapshotListener{value, error ->
                 val posts = value!!.toObjects(Post::class.java)
 
                 Log.d("post", postId)
