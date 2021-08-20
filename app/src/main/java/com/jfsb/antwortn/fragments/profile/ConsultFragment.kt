@@ -48,31 +48,18 @@ class ConsultFragment(private val profileId:String) : Fragment() {
         rev = binding.rvConsultasFragment
         fab = binding.fabNewConsult
 
-        db.collection("post").whereEqualTo("userId",profileId).addSnapshotListener{value, error ->
+        db.collection("post").whereEqualTo("userId",profileId).orderBy("date").addSnapshotListener{value, error ->
             val posts = value!!.toObjects(Post::class.java)
-
-/*
-            posts.forEachIndexed{ index, post ->
-                post.postId = value.documents[index].id
-            }*/
-
-            //posts.add(2,Post("Texto donde se explica la duda que se tiene", Date(),"Username"))
 
             rev.apply {
                 setHasFixedSize(true)
                 layoutManager = LinearLayoutManager(context)
-
-
                 adapter = PostAdapter(this@ConsultFragment,posts)
             }
         }
 
         fab.setOnClickListener{
-
             CreatePostDialog().show(requireActivity().supportFragmentManager, "Crear")
-            /*
-            val intent = Intent (requireContext(), CreateActivity::class.java)
-            startActivity(intent)*/
         }
 
     }

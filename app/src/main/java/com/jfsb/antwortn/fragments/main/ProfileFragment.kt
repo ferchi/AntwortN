@@ -91,9 +91,9 @@ class ProfileFragment : Fragment() {
         //Utilizar el childFragmentManager para evitar errores dentro del tab layout
         val adapter = ViewPagerAdapter(childFragmentManager)
 
-        adapter.addFragment(NewsFragment(), "Recientes")
+        adapter.addFragment(NewsFragment(profileId), "Recientes")
         adapter.addFragment(ConsultFragment(profileId), "Consultas")
-        adapter.addFragment(AnswersFragment(), "Respuestas")
+        adapter.addFragment(AnswersFragment(profileId), "Respuestas")
 
         binding.viewPager.adapter = adapter
         binding.tabs.setupWithViewPager(binding.viewPager)

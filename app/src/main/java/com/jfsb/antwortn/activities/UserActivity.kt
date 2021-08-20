@@ -134,9 +134,9 @@ class UserActivity : AppCompatActivity() {
 
     private fun setUpTabs(profileId:String) {
         val adapter = ViewPagerAdapter(supportFragmentManager)
-        adapter.addFragment(NewsFragment(), "Recientes")
+        adapter.addFragment(NewsFragment(profileId), "Recientes")
         adapter.addFragment(ConsultFragment(profileId), "Consultas")
-        adapter.addFragment(AnswersFragment(), "Respuestas")
+        adapter.addFragment(AnswersFragment(profileId), "Respuestas")
         binding.viewPager.adapter = adapter
         binding.tabs.setupWithViewPager(binding.viewPager)
 
